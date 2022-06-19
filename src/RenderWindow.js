@@ -3,10 +3,9 @@ import { createPortal } from "react-dom";
 import New_Window from "./New_Window";
 
 
-function RenderInWindow (props) {
+function RenderInWindow({ handleOpen}) {
   const [container, setContainer] = useState(null);
   const newWindow = useRef(window);
-  const curWindow = newWindow.current;
   useEffect(() => {
     const div = document.createElement("div");
       
@@ -18,7 +17,7 @@ function RenderInWindow (props) {
       newWindow.current = window.open(
         "",
         "",
-        "width=700,height=450,left=300,top=300"
+        "width=810,height=520,left=300,top=300"
       );
       newWindow.current.document.body.appendChild(container);
       const curWindow = newWindow.current;
@@ -26,30 +25,20 @@ function RenderInWindow (props) {
       parentHead.forEach( item => {
         curWindow.document.head.appendChild(item.cloneNode(true));
       })
-    return ()=>curWindow.close();
+      return () => { curWindow.close(); handleOpen(); }
     }
     
   }, [container]);
 
   const handleClose = () => {
-    setContainer(null)
-    
-    console.log('set null' + container)
+    setContainer(null)       
   }
 
   return (
     
     container && createPortal(<New_Window handleClose={handleClose} />
-      , container)
-      
-    
-    
-    
-     
-  
+      , container) 
   )
-
-
 };
 
 export default RenderInWindow;
