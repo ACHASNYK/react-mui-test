@@ -6,9 +6,11 @@ import New_Window from "./New_Window";
 function RenderInWindow({ handleOpen}) {
   const [container, setContainer] = useState(null);
   const newWindow = useRef(window);
+  console.log(newWindow)
   useEffect(() => {
-    const div = document.createElement("div");
-      
+    const div = document.getElementById('portal');
+    
+      console.log(div)
     setContainer(div);
   }, []);
 

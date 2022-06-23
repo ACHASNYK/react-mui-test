@@ -9,21 +9,28 @@ import TableRow from '@mui/material/TableRow';
 import { Data } from './data';
 import RenderInWindow from './RenderWindow';
 import { Typography } from '@mui/material';
+import { headerPreProcessing, subheaderPreProcessing } from './helper';
+
 
 
 
 function App() {
   
   const [open, setOpen] = useState();
-  const headerYears = ['2017', '2018', '2019'];                
-  const subYears = ['XX', 'YY', 'ZZ'];
-  const noDATA = ['a', 'b', 'c'];
+  const [index, setIndex] = useState()
+  const headerYears = headerPreProcessing(Data);
+  let subYears = [];
+  subYears = subheaderPreProcessing(Data);  
   
+  function handleIndex(e) {
+    setIndex(e);
+    
+  }
+console.log(index)
   function handleOpen () {
     setOpen(false)
   }
-  
-    
+      
   return (
     
     <Paper elevation={4} sx={{ width: '80%', marginLeft: 30 }}>
@@ -33,14 +40,14 @@ function App() {
             <TableRow>
               <TableCell align='center'></TableCell>
               {headerYears.map(year => (           
-                <TableCell style={{width:100}} key={year} align='center' colSpan={3}><Typography variant='h5'>{year}</Typography></TableCell>
+                <TableCell style={{width:100}} key={year} align='center' colSpan={`${subYears.length}`}><Typography variant='h5'>{year}</Typography></TableCell>
                       
                   ))}
             </TableRow>
             
             <TableRow>
               <TableCell align='center'><Typography variant='h6'>regions</Typography></TableCell>
-              {subYears.map(i => (
+              {headerYears.map(i => (
                 subYears.map(e => <TableCell style={{width:100}} key={e} align='center'><Typography variant='body1'>{e}</Typography></TableCell>) )
               )}
             </TableRow>
@@ -53,8 +60,8 @@ function App() {
                 { headerYears.map(year => (
                   Data[region]?.G[year] ?
                     Object.entries(Data[region]?.G[year]).map
-                      (data =>  <TableCell key={data} align='center' onClick={() => setOpen(true)} ><Typography variant='subtitle1'>{data[1]?.value}</Typography></TableCell>) :
-                    noDATA.map(i => <TableCell key={i} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell>)
+                      (data => <TableCell id={[region, year, data[0]]} key={data} align='center' onClick={(e) => { { setOpen(true); handleIndex(e) } }} ><Typography variant='subtitle1'>{data[1]?.value}</Typography></TableCell>) :
+                    subYears.map(i => <TableCell key={i} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell>)
                 ))    
                 }       
         
@@ -62,7 +69,7 @@ function App() {
           </TableBody>
         </Table>
       </TableContainer>
-      { open && <RenderInWindow handleOpen={handleOpen}></RenderInWindow> }      
+      {open && <RenderInWindow index={index} handleOpen={handleOpen}></RenderInWindow> }      
     </Paper>
   
   );
