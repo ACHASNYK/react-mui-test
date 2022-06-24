@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import { Data } from './data';
 import RenderInWindow from './RenderWindow';
 import { Typography } from '@mui/material';
-import { headerPreProcessing, subheaderPreProcessing } from './helper';
+import { yearsPreProcessing } from './helper';
 
 
 
@@ -18,37 +18,38 @@ function App() {
   
   const [open, setOpen] = useState();
   const [index, setIndex] = useState()
-  const headerYears = headerPreProcessing(Data);
-  let subYears = [];
-  subYears = subheaderPreProcessing(Data);  
+  const { result_array_years, longest_sub }  = yearsPreProcessing(Data);
+  console.log(result_array_years, longest_sub)
+  // let subYears = [];
+  // subYears = subheaderPreProcessing(Data);  
   
   function handleIndex(e) {
     setIndex(e);
     
   }
-console.log(index)
+// console.log(index)
   function handleOpen () {
-    setOpen(false)
+    setOpen(true)
   }
       
   return (
     
     <Paper elevation={4} sx={{ width: '80%', marginLeft: 30 }}>
-      <TableContainer sx={{ maxHeight: 800, maxWidth: 800, marginLeft: 20, padding: 20 }}>
+      <TableContainer sx={{ maxHeight: 800, maxWidth: 1200, marginLeft: 10, padding: 10 }}>
         <Table stickyHeader aria-label='sticky table' sx={{padding: '10'}}>
           <TableHead >
             <TableRow>
               <TableCell align='center'></TableCell>
-              {headerYears.map(year => (           
-                <TableCell style={{width:100}} key={year} align='center' colSpan={`${subYears.length}`}><Typography variant='h5'>{year}</Typography></TableCell>
+              {result_array_years.map(year => (           
+                <TableCell style={{width:100}} key={year} align='center' colSpan={`${longest_sub.length}`}><Typography variant='h5'>{year}</Typography></TableCell>
                       
                   ))}
             </TableRow>
             
             <TableRow>
               <TableCell align='center'><Typography variant='h6'>regions</Typography></TableCell>
-              {headerYears.map(i => (
-                subYears.map(e => <TableCell style={{width:100}} key={e} align='center'><Typography variant='body1'>{e}</Typography></TableCell>) )
+              {result_array_years.map(i => (
+                longest_sub.map(e => <TableCell style={{width:100}} key={e} align='center'><Typography variant='body1'>{e}</Typography></TableCell>) )
               )}
             </TableRow>
             
@@ -57,13 +58,12 @@ console.log(index)
             {Object.keys(Data).map((region, x) => (               
               <TableRow key={region} hover>
                 <TableCell key={x} align='center'><Typography variant='h6'>{region}</Typography></TableCell>
-                { headerYears.map(year => (
-                  Data[region]?.G[year] ?
-                    Object.entries(Data[region]?.G[year]).map
-                      (data => <TableCell id={[region, year, data[0]]} key={data} align='center' onClick={(e) => { { setOpen(true); handleIndex(e) } }} ><Typography variant='subtitle1'>{data[1]?.value}</Typography></TableCell>) :
-                    subYears.map(i => <TableCell key={i} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell>)
-                ))    
-                }       
+                {result_array_years?.map(year => (
+                  Data[region]?.G[year] ? (longest_sub.map(sub => (Data[region]?.G[year]?.[sub] ? <TableCell key={sub} align='center' onClick={(e) => handleOpen() } >{Data[region]?.G[year]?.[sub]?.value}</TableCell> : 
+                  <TableCell key={sub} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell> ))) :
+                  
+                  (longest_sub.map(o => <TableCell key={o} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell>))))}
+                                
         
               </TableRow> ))}              
           </TableBody>
