@@ -5,7 +5,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import { MenuItem, Typography, Button, ButtonGroup, Box } from '@mui/material';
+import { MenuItem, Typography, Button, ButtonGroup, Box, Select } from '@mui/material';
 
 import { TextField } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
@@ -43,9 +43,9 @@ function New_Window({handleClose}) {
         return (
         
             <Paper elevation={3} sx={{ width: '95%', maxWidth: 800, paddingBottom: 5, marginTop: 2, marginLeft: 2}}>
-                <TableContainer sx={{ maxWidth: 600, maxHeight: 320, marginLeft:7, paddingTop:3, marginBottom: 5 }}  >
+                <TableContainer sx={{ maxWidth: 650, maxHeight: 320, marginLeft:7, paddingTop:3, marginBottom: 5 }}  >
                         <Table stickyHeader  >
-                            <TableHead sx={{maxWidth: 500}} >
+                            <TableHead sx={{maxWidth: 550}} >
                                 <TableRow>
                                     {Header.map((item,i) => (
                                         <TableCell sx={{width: '25%'}} key={i} align='center'><Typography variant='h5'>{item}</Typography></TableCell>
@@ -89,20 +89,21 @@ function New_Window({handleClose}) {
                             />
                                                              
                         <TextField 
-                            sx={{width: '15vw', marginRight:2}}
+                            sx={{width: '17vw', marginRight:2}}
                             required
-                            variant='outlined'
+                            // variant='outlined'
                             select
                             label="Input User Name"
                             name="user"
                             id="demo-simple-select-helper"
                             value={input.user}
                             onChange={handleInputChange}
-                            error={!input.user && validate}                                          
+                            error={!input.user && validate}
+                            SelectProps={{native:true}}    
                             >
-                        <MenuItem  value="">{input.user}</MenuItem>
+                        <option value="">{input.user}</option>
                                     {Users.map((e, i) => (
-                                <MenuItem  key={i} value={e}>{e}</MenuItem>                                        
+                                <option key={i} value={e}>{e}</option>                                        
                                 ))}
                         </TextField>
                         <TextField 

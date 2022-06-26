@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Data } from './data';
+import { Data as source_data}  from './data';
 import RenderInWindow from './RenderWindow';
 import { Typography } from '@mui/material';
 import { yearsPreProcessing } from './helper';
@@ -14,24 +14,47 @@ import { yearsPreProcessing } from './helper';
 
 
 
+
 function App() {
   
-  const [open, setOpen] = useState();
-  const [index, setIndex] = useState()
-  const { result_array_years, longest_sub }  = yearsPreProcessing(Data);
-  console.log(result_array_years, longest_sub)
-  // let subYears = [];
-  // subYears = subheaderPreProcessing(Data);  
+  const [isOpen, setOpen] = useState(false);
+  const [index, setIndex] = useState();
+  // const [data , setData] = useState()
   
-  function handleIndex(e) {
-    setIndex(e);
+  const { result_array_years, longest_sub }  = yearsPreProcessing(source_data);
+  
+  const Data = dataPreProcessing() 
+  function dataPreProcessing() {
+    let load = JSON.parse(sessionStorage.getItem('saved_data') || {});
+    if (load !== null) return load; return source_data  
+  }    
+  
+  function handleIndex(region, year, sub) {
+    let saved = JSON.parse(sessionStorage.getItem('saved_data') || {});
+    
+    Object.keys(saved) ? saved = source_data : saved;  
+       
+    saved[region]?.G[year]?.[sub].value = input_value;
+    return sessionStorage.setItem('saved_data', JSON.stringify(saved))
+  }
+    setIndex({
+      region: region,
+      year: year,
+      sub: sub,
+
+    });
     
   }
-// console.log(index)
+
+
   function handleOpen () {
-    setOpen(true)
+    setOpen(false)
   }
-      
+  console.log(isOpen)
+  console.log(document.getElementById('portal'))
+  console.log(document.getElementById('root'))
+  console.log(document.getElementById('www'))
+  console.log(index)
   return (
     
     <Paper elevation={4} sx={{ width: '80%', marginLeft: 30 }}>
@@ -59,17 +82,19 @@ function App() {
               <TableRow key={region} hover>
                 <TableCell key={x} align='center'><Typography variant='h6'>{region}</Typography></TableCell>
                 {result_array_years?.map(year => (
-                  Data[region]?.G[year] ? (longest_sub.map(sub => (Data[region]?.G[year]?.[sub] ? <TableCell key={sub} align='center' onClick={(e) => handleOpen() } >{Data[region]?.G[year]?.[sub]?.value}</TableCell> : 
+                  Data[region]?.G[year] ? (longest_sub.map(sub => (Data[region]?.G[year]?.[sub] ? <TableCell key={sub} align='center' onClick={(e) => { setOpen(true); handleIndex(region, year, sub) }} >{Data[region]?.G[year]?.[sub]?.value}</TableCell> : 
                   <TableCell key={sub} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell> ))) :
                   
-                  (longest_sub.map(o => <TableCell key={o} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell>))))}
+                    (longest_sub.map(o => <TableCell key={o} align='center'><Typography color={'darkred'} variant='caption'>{'n/a'}</Typography></TableCell>))))}
                                 
         
               </TableRow> ))}              
           </TableBody>
         </Table>
       </TableContainer>
-      {open && <RenderInWindow index={index} handleOpen={handleOpen}></RenderInWindow> }      
+      
+      {isOpen && (<RenderInWindow index={index} handleOpen={handleOpen}></RenderInWindow>)}
+     
     </Paper>
   
   );

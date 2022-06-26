@@ -18,7 +18,7 @@ export const yearsPreProcessing = (data) => {
     });
 
     
-    console.log(array_sub)
+    
 
 
     year_max = Math.max(...array_years);
@@ -37,7 +37,7 @@ export const yearsPreProcessing = (data) => {
 
     sub_max = array_sub[0].length;
     longest_sub = array_sub[0];
-    console.log(sub_max, longest_sub)
+    
     
     for (let i = 1; i < array_sub.length; ++i) {
         if (array_sub[i].length > sub_max) {
@@ -46,7 +46,7 @@ export const yearsPreProcessing = (data) => {
             }
        
     }
-    console.log(result_array_years, longest_sub)
+    console.log("helper works")
     return { result_array_years, longest_sub };  
 }    
     
