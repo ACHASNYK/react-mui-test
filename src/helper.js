@@ -16,11 +16,6 @@ export const yearsPreProcessing = (data) => {
             array_sub.push(sub);
         })
     });
-
-    
-    
-
-
     year_max = Math.max(...array_years);
     year_min = Math.min(...array_years);
     result_array_years.push(year_min);
@@ -46,24 +41,8 @@ export const yearsPreProcessing = (data) => {
             }
        
     }
-    console.log("helper works")
+    
     return { result_array_years, longest_sub };  
 }    
-    
-// return ( result_array_years, longest_sub , console.log(result_array_years, longest_sub));
 
-// }
 
-// export const subheaderPreProcessing = (data) => {
-   
-//     let item = [];
-    
-//     Object.keys(data).map(e => { 
-//         Object.keys(data[e]?.G).map(i => { 
-//             item.push(Object.keys(data[e]?.G[i])) 
-//         })
-        
-//     })
-//     let subYears = item[0];
-//     return item[0];
-// }

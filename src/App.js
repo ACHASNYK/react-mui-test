@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,50 +15,57 @@ import { yearsPreProcessing } from './helper';
 
 
 
+
 function App() {
   
   const [isOpen, setOpen] = useState(false);
-  const [index, setIndex] = useState();
-  // const [data , setData] = useState()
-  
+  const [input , setInput] = useState()
+  const index = useRef();
+  // !=========== here is preprocessing engine to generate a filled year and sub-year sequence without missed elememts
   const { result_array_years, longest_sub }  = yearsPreProcessing(source_data);
   
-  const Data = dataPreProcessing() 
-  function dataPreProcessing() {
-    let load = JSON.parse(sessionStorage.getItem('saved_data') || {});
-    if (load !== null) return load; return source_data  
-  }    
   
-  function handleIndex(region, year, sub) {
-    let saved = JSON.parse(sessionStorage.getItem('saved_data') || {});
+  const Data = dataPreProcessing();
     
-    Object.keys(saved) ? saved = source_data : saved;  
-       
-    saved[region]?.G[year]?.[sub].value = input_value;
-    return sessionStorage.setItem('saved_data', JSON.stringify(saved))
-  }
-    setIndex({
-      region: region,
-      year: year,
-      sub: sub,
+  
+  function dataPreProcessing() {
+      let saved = {};
+      saved = JSON.parse(sessionStorage.getItem('saved_data')) || {};
+     if (Object.keys(saved).length===0)  {saved = source_data; console.log(saved)} 
+     if (input) { saved = {...saved, [index.current.region]:
+      {...saved[index.current.region], G:
+        {...saved[index.current.region].G, [index.current.year]: 
+          {...saved[index.current.region].G[index.current.year], [index.current.sub]: 
+            {...saved[index.current.region].G[index.current.year][index.current.sub], value: input}}}}};
+          sessionStorage.setItem('saved_data', JSON.stringify(saved))} 
+      
+     
+     return saved;
+    };
 
-    });
     
-  }
+  function handleInput(input) {
+    setInput(input);
+  }  
+
+  function handleIndex(region, year, sub){
+      let a = {
+        region: region,
+        year: year,
+        sub: sub
+         }
+         index.current = a;
+    }
 
 
   function handleOpen () {
     setOpen(false)
   }
-  console.log(isOpen)
-  console.log(document.getElementById('portal'))
-  console.log(document.getElementById('root'))
-  console.log(document.getElementById('www'))
-  console.log(index)
+  
   return (
     
-    <Paper elevation={4} sx={{ width: '80%', marginLeft: 30 }}>
-      <TableContainer sx={{ maxHeight: 800, maxWidth: 1200, marginLeft: 10, padding: 10 }}>
+    <Paper elevation={4} sx={{ width: '85%', marginLeft: 20, marginTop: 5 }}>
+      <TableContainer sx={{ maxHeight: 800, maxWidth: 1400, marginLeft: 5, padding: 10 }}>
         <Table stickyHeader aria-label='sticky table' sx={{padding: '10'}}>
           <TableHead >
             <TableRow>
@@ -93,7 +100,7 @@ function App() {
         </Table>
       </TableContainer>
       
-      {isOpen && (<RenderInWindow index={index} handleOpen={handleOpen}></RenderInWindow>)}
+      {isOpen && (<RenderInWindow handleInput={handleInput} handleOpen={handleOpen}></RenderInWindow>)}
      
     </Paper>
   

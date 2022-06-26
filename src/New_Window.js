@@ -13,7 +13,7 @@ import {Header, Row_data, Users, defaulData} from './window_data'
 
 
 
-function New_Window({handleClose}) {
+function New_Window({handleClose, handleInput}) {
         
         
     const [row, setRow] = useState(Row_data);
@@ -37,15 +37,16 @@ function New_Window({handleClose}) {
                 comment: 'default input data'
             };
             Object.entries(input).map(e => (e[1] === '' ? (a = true) : null));
-            return a? (setValidate(true), console.log(default_values)) : (setRow([...row, input]), console.log(input));
+            return a? (setValidate(true), console.log(default_values)) : 
+            (setRow([...row, input]), handleInput(input.value), console.log(input));
         }
         
         return (
         
-            <Paper elevation={3} sx={{ width: '95%', maxWidth: 800, paddingBottom: 5, marginTop: 2, marginLeft: 2}}>
-                <TableContainer sx={{ maxWidth: 650, maxHeight: 320, marginLeft:7, paddingTop:3, marginBottom: 5 }}  >
+            <Paper elevation={3} sx={{ width: '95%', maxWidth: 850, paddingBottom: 5, marginTop: 2, marginLeft: 2}}>
+                <TableContainer sx={{ maxWidth: 700, maxHeight: 320, marginLeft:3, paddingTop:3, marginBottom: 5 }}  >
                         <Table stickyHeader  >
-                            <TableHead sx={{maxWidth: 550}} >
+                            <TableHead sx={{maxWidth: 600}} >
                                 <TableRow>
                                     {Header.map((item,i) => (
                                         <TableCell sx={{width: '25%'}} key={i} align='center'><Typography variant='h5'>{item}</Typography></TableCell>
@@ -62,9 +63,9 @@ function New_Window({handleClose}) {
                         </Table>    
                     </TableContainer>
 
-                        <Box sx={{marginTop: 5, paddingTop: 5, maxWidth: 600}} component="form" display="inline" width="600" >                            
+                        <Box sx={{marginTop: 5, paddingTop: 5, maxWidth: 600}} component="form" display="inline" width="620" >                            
                         <TextField 
-                        sx={{ width: '15vw', marginLeft: 9, marginRight: 2 }}
+                        sx={{ width: '16vw', marginLeft: 5, marginRight: 1 }}
                         required
                         variant='outlined'
                         name="value"                        
@@ -76,7 +77,7 @@ function New_Window({handleClose}) {
                         error={!input.value && validate}
                         />
                         <TextField 
-                            sx={{width: '17vw', marginRight: 2}}                            
+                            sx={{width: '18vw', marginRight: 1}}                            
                              required
                             variant='outlined'
                             name="date"
@@ -89,7 +90,7 @@ function New_Window({handleClose}) {
                             />
                                                              
                         <TextField 
-                            sx={{width: '17vw', marginRight:2}}
+                            sx={{width: '17vw', marginRight:1}}
                             required
                             // variant='outlined'
                             select
@@ -107,7 +108,7 @@ function New_Window({handleClose}) {
                                 ))}
                         </TextField>
                         <TextField 
-                            sx={{width: '20vw', marginRight: 3}}
+                            sx={{width: '20vw', marginRight: 1}}
                             required
                             variant='outlined'
                             name="comment"
